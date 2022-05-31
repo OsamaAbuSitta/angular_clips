@@ -3,19 +3,23 @@ import { CommonModule } from '@angular/common';
 import { ModalComponent } from './modal/modal.component';
 import { ModalService } from './modal.service';
 import { TabsContainerComponent } from './tab/tabs-container/tabs-container.component';
+import { TabContentComponent } from './tab/tab-content/tab-content.component';
 
 
 
 @NgModule({
   declarations: [
     ModalComponent,
-    TabsContainerComponent
+    TabsContainerComponent,
+    TabContentComponent
   ],
   imports: [
     CommonModule
   ],
   exports:[
-    ModalComponent
+    ModalComponent,
+    TabsContainerComponent,
+    TabContentComponent
   ],
   providers:[
   ]
