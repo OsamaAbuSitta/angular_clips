@@ -1,0 +1,40 @@
+<!-- Registration Form -->
+<form [formGroup]="registerForm">
+    <!-- Name -->
+    <div class="mb-3">
+      <label class="inline-block mb-2">Name</label>
+      <app-input type="text" [control]="name" placeholder="Enter Name"></app-input>
+    </div>
+    <!-- Email -->
+    <div class="mb-3">
+      <label class="inline-block mb-2">Email</label>
+      <app-input [control]="email" placeholder="Enter Email"></app-input>
+    </div>
+    <!-- Age -->
+    <div class="mb-3">
+      <label class="inline-block mb-2">Age</label>
+      <app-input type="number" [control]="age" placeholder="Enter Age"></app-input>
+    </div>
+    <!-- Password -->
+    <div class="mb-3">
+      <label class="inline-block mb-2">Password</label>
+      <app-input type="password" [control]="password" placeholder="Enter Password"></app-input>
+    </div>
+    <!-- Confirm Password -->
+    <div class="mb-3">
+      <label class="inline-block mb-2">Confirm Password</label>
+      <app-input type="password" [control]="confirm_password" placeholder="Enter Confirm Password"></app-input>
+    </div>
+    <!-- Phone Number -->
+    <div class="mb-3">
+      <label class="inline-block mb-2">Phone Number</label>
+      <app-input type="text" [control]="phoneNumber" placeholder="Enter phone number" format="(000)0-00000000"></app-input>
+    </div>
+    <button type="submit" class="block w-full bg-indigo-400 text-white py-1.5 px-3 rounded transition" 
+    [ngClass]="{
+        'opacity-50':registerForm.invalid,
+        'hover:bg-indigo-500':registerForm.valid }"
+    [disabled]="!registerForm.invalid">
+      Submit
+    </button>
+  </form>
