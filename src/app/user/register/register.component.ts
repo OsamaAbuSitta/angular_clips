@@ -77,12 +77,10 @@ export class RegisterComponent implements OnInit {
       this.authService.createUser(user, password)
         .subscribe({
           next: (result) => {
-            debugger;
             this.alertMessage = 'Success! Your account has been created. 👌👌';
             this.alertColor = 'green';
           },
           error: (error) => {
-            debugger;
             console.error(error)
             this.alertMessage = (<any>error).message;
             this.alertColor = 'red';
