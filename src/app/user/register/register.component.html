@@ -36,7 +36,7 @@
     [ngClass]="{
         'opacity-50':registerForm.invalid,
         'hover:bg-indigo-500':registerForm.valid }"
-    [disabled]="!registerForm.invalid">
+        [disabled]="registerForm.invalid || inSubmission">
       Submit
     </button>
   </form>

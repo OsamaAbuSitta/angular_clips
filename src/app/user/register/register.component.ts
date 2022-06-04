@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -8,8 +11,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class RegisterComponent implements OnInit {
   showAlert = false;
-  alertMessage = 'Please wait you account is being created. 😇';
+  alertMessage = '';
   alertColor = 'orange';
+  inSubmission = false;
 
   name = new FormControl('', [
     Validators.required,
@@ -52,18 +56,53 @@ export class RegisterComponent implements OnInit {
     phoneNumber: this.phoneNumber,
   });
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
   }
 
   register() {
-    
+    this.inSubmission = true;
     this.showAlert = true;
-    console.log(this.registerForm.valid);
-    console.log(this.registerForm.valid);
+    this.alertMessage = 'Please wait you account is being created. 😇';
+    const password = this.registerForm.value.password;
+    const user = {
+      name: this.registerForm.value.name,
+      email: this.registerForm.value.email,
+      age: this.registerForm.value.age,
+      phoneNumber: this.registerForm.value.phoneNumber,
+    }
+
+    try {
+      this.authService.createUser(user, password)
+        .subscribe({
+          next: (result) => {
+            debugger;
+            this.alertMessage = 'Success! Your account has been created. 👌👌';
+            this.alertColor = 'green';
+          },
+          error: (error) => {
+            debugger;
+            console.error(error)
+            this.alertMessage = (<any>error).message;
+            this.alertColor = 'red';
+            this.inSubmission = false;
+          },
+          complete:()=> {
+            this.inSubmission = false;
+          }
+        })
+
+    }
+    catch (error) {
+      console.error(error)
+      this.alertMessage = (<any>error).message;
+      this.alertColor = 'red';
+      return;
+    }
+
   }
 
-   
-  
+
+
 }
