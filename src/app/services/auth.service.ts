@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { AngularFirestore, AngularFirestoreCollection } from "@angular/fire/compat/firestore";
 import { Observable , from } from "rxjs";
-import { concatMap,catchError , map, take,mergeMap} from "rxjs/operators";
+import { concatMap,catchError , map, take,mergeMap,delay} from "rxjs/operators";
 import IUser from "../models/user-model";
 
 
@@ -10,9 +10,12 @@ import IUser from "../models/user-model";
 export class AuthService {
     private userCollection: AngularFirestoreCollection<IUser>;
     public isAuthenticated$ : Observable<boolean>;
+    public isAuthenticatedWithDelay$ : Observable<boolean>;
+
     constructor(private auth: AngularFireAuth, private db: AngularFirestore) {
         this.userCollection = this.db.collection<IUser>('users')
         this.isAuthenticated$ = auth.user.pipe(map(result => !!result));
+        this.isAuthenticatedWithDelay$ = this.isAuthenticated$.pipe(delay(1000))
     }
 
     createUser(user: IUser,password:string) : Observable<IUser>{
@@ -43,4 +46,8 @@ export class AuthService {
        return resultObservable;
       }
    
+    // give it try to async 
+    async login(email:string, password:string){
+        await this.auth.signInWithEmailAndPassword(email,password);
+    }
 }

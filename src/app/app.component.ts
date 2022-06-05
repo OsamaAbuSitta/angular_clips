@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from './services/auth.service';
 import { ModalService } from './shared/modal.service';
 
 @Component({
@@ -9,6 +10,6 @@ import { ModalService } from './shared/modal.service';
 export class AppComponent {
   title = 'clips';
 
-  constructor(private modalService:ModalService){
+  constructor(public authService: AuthService){
   }
 }

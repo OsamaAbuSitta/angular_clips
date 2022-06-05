@@ -36,5 +36,6 @@ export class ModalComponent implements OnInit , OnDestroy {
 
   ngOnDestroy(): void {
     this.modalService.unRegister(this.modalId);
+    document.body.removeChild(this.element.nativeElement);
   }
 }

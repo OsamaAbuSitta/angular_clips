@@ -7,7 +7,7 @@
         <!-- Primary Navigation -->
         <ul class="flex flex-row mt-1">
           <!-- Navigation Links -->
-          <li *ngIf="!(authService.isAuthenticated$ | async);else authenticatedLinks">
+          <li *ngIf="!(authService.isAuthenticatedWithDelay$ | async);else authenticatedLinks">
             <a class="px-2" href="#" (click)="openModal($event)" >Login / Register</a>
           </li>  
 
@@ -19,7 +19,7 @@
               <a class="px-2" href="#">Upload</a>
             </li>
           </ng-template>
-          
+
           <li>
             <a class="px-2" href="about.html">About</a>
           </li>
