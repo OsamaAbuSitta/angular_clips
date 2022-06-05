@@ -46,8 +46,11 @@ export class AuthService {
        return resultObservable;
       }
    
-    // give it try to async 
     async login(email:string, password:string){
         await this.auth.signInWithEmailAndPassword(email,password);
+    }
+
+    async logout(){
+        await this.auth.signOut();
     }
 }
