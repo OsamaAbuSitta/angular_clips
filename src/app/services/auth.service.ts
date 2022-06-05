@@ -9,9 +9,10 @@ import IUser from "../models/user-model";
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     private userCollection: AngularFirestoreCollection<IUser>;
-
+    public isAuthenticated$ : Observable<boolean>;
     constructor(private auth: AngularFireAuth, private db: AngularFirestore) {
         this.userCollection = this.db.collection<IUser>('users')
+        this.isAuthenticated$ = auth.user.pipe(map(result => !!result));
     }
 
     createUser(user: IUser,password:string) : Observable<IUser>{
