@@ -69,7 +69,7 @@ export class RegisterComponent implements OnInit {
     const user = {
       name: this.registerForm.value.name,
       email: this.registerForm.value.email,
-      age: this.registerForm.value.age,
+      age: +this.registerForm.value.age,
       phoneNumber: this.registerForm.value.phoneNumber,
     }
 
