@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CompareValueValidator } from '@shared/validators/compare-value-validator';
 import { AuthService } from 'src/app/services/auth.service';
+
 
 @Component({
   selector: 'app-register',
@@ -37,8 +39,7 @@ export class RegisterComponent implements OnInit {
   ]);
 
   confirm_password = new FormControl('', [
-    Validators.required,
-    Validators.pattern(/fds/)
+    Validators.required
   ]);
 
   phoneNumber = new FormControl('', [
@@ -54,7 +55,7 @@ export class RegisterComponent implements OnInit {
     password: this.password,
     confirm_password: this.confirm_password,
     phoneNumber: this.phoneNumber,
-  });
+  },[CompareValueValidator.match('password','confirm_password')]);
 
   constructor(private authService: AuthService) { }
 

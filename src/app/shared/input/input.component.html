@@ -1,7 +1,7 @@
 <input [type]="type" class="block w-full py-1.5 px-3 text-gray-200 border border-gray-400 transition
 duration-500 focus:outline-none rounded bg-transparent focus:border-indigo-400" 
 [placeholder]="placeholder" [formControl]="control"  [mask]="format" [dropSpecialCharacters]="false"/>
-<ng-container *ngIf="control.dirty">
+<ng-container *ngIf="control.dirty || control.touched">
     <p *ngIf="control.errors?.required" class="text-red-400">
         Field is required !!
     </p>
@@ -23,4 +23,5 @@ duration-500 focus:outline-none rounded bg-transparent focus:border-indigo-400"
         Password must be at least 8 characters, contain at least 1 uppercase letter, 1 lowercase letter, and 1 number, Can contain special characters !!
     </p>
     
+    <ng-content select="[validators]"></ng-content>
 </ng-container>
