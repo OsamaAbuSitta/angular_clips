@@ -10,7 +10,13 @@
     <!-- Email -->
     <div class="mb-3">
       <label class="inline-block mb-2">Email</label>
-      <app-input [control]="email" placeholder="Enter Email"></app-input>
+      <app-input [control]="email" placeholder="Enter Email">
+        <ng-container validators>
+           <p *ngIf="email.errors?.emailTaken" class="text-red-400"> 
+            The email is taken, Please use another email.
+           </p>
+        </ng-container>
+      </app-input>
     </div>
     <!-- Age -->
     <div class="mb-3">
@@ -26,11 +32,12 @@
     <div class="mb-3">
       <label class="inline-block mb-2">Confirm Password</label>
       <app-input type="password" [control]="confirm_password" placeholder="Enter Confirm Password">
-        <ng-container validators>
-          <p *ngIf="registerForm.errors?.noMatch" class="text-red-400">
+        <!-- <ng-container validators>
+         <p *ngIf="registerForm.errors?.noMatch" class="text-red-400">
             Confirm password doesn't match the entered password 🤔🤔
           </p>
         </ng-container>
+      -->
       </app-input>
     </div>
     <!-- Phone Number -->

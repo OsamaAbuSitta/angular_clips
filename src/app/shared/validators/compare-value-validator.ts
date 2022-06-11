@@ -6,8 +6,10 @@ export class CompareValueValidator {
             const control = group.get(controlName);
             const matchingControl = group.get(matchingControlName);
 
-            if (!control || !matchingControl)
+            if (!control || !matchingControl){
+                console.error('Form control can not be found in the form group !!');
                 return { controlNotFound: false };
+            }
 
             if (control.value !== matchingControl.value)
                 matchingControl.setErrors({ noMatch: errorMessage })

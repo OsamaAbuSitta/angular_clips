@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CompareValueValidator } from '@shared/validators/compare-value-validator';
 import { AuthService } from 'src/app/services/auth.service';
+import { EmailValidator } from '../validators/email-validator';
 
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.css'],
+  providers:[EmailValidator]
 })
 export class RegisterComponent implements OnInit {
   showAlert = false;
@@ -25,7 +25,7 @@ export class RegisterComponent implements OnInit {
   email = new FormControl('', [
     Validators.required,
     Validators.email
-  ]);
+  ],[this.emailTaken.validate]);
 
   age = new FormControl('', [
     Validators.required,
@@ -57,7 +57,7 @@ export class RegisterComponent implements OnInit {
     phoneNumber: this.phoneNumber,
   },[CompareValueValidator.match('password','confirm_password','Confirm password doesn\'t match the entered password 🤔🤔')]);
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService,private emailTaken : EmailValidator) { }
 
   ngOnInit(): void {
   }
