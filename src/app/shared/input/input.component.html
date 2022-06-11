@@ -23,5 +23,8 @@ duration-500 focus:outline-none rounded bg-transparent focus:border-indigo-400"
         Password must be at least 8 characters, contain at least 1 uppercase letter, 1 lowercase letter, and 1 number, Can contain special characters !!
     </p>
     
+    <p *ngIf="control.errors?.noMatch" class="text-red-400">
+        {{control.errors?.noMatch}}
+    </p>
     <ng-content select="[validators]"></ng-content>
 </ng-container>
