@@ -5,6 +5,7 @@ import { Observable, from, filter, of } from "rxjs";
 import { concatMap, catchError, map, take, mergeMap, delay, switchMap } from "rxjs/operators";
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import IUser from "../models/user-model";
+import firebase from 'firebase/compat/app';
 
 
 @Injectable({ providedIn: 'root' })
@@ -30,6 +31,10 @@ export class AuthService {
         ).subscribe(data => {
             this.redirect = data.authOnly ?? false;
         });
+    }
+
+    getUser() : Observable<firebase.User | null>{
+        return this.auth.user;
     }
 
     createUser(user: IUser, password: string): Observable<IUser> {
@@ -70,4 +75,6 @@ export class AuthService {
         if (this.redirect)
             await this.router.navigateByUrl('/'); //absulate path to base path
     }
+
+
 }

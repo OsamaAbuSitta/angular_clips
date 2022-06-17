@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Constants } from '@shared/constants';
+import { AlertColor, Constants } from '@shared/constants';
 import { ModalService } from '@shared/modal.service';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class LoginComponent implements OnInit {
   constatns = Constants;
   showAlert = false;
-  alertColor = '';
+  alertColor : AlertColor = 'blue';
   alertMessage ='';
 
   credentials = {

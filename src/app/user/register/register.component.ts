@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CompareValueValidator } from '@shared/validators/compare-value-validator';
 import { AuthService } from 'src/app/services/auth.service';
 import { EmailValidator } from '../validators/email-validator';
-
+import { AlertColor } from '@shared/constants';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +14,7 @@ import { EmailValidator } from '../validators/email-validator';
 export class RegisterComponent implements OnInit {
   showAlert = false;
   alertMessage = '';
-  alertColor = 'orange';
+  alertColor : AlertColor = 'orange';
   inSubmission = false;
 
   name = new FormControl('', [
