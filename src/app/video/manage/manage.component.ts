@@ -44,6 +44,7 @@ export class ManageComponent implements OnInit {
    getUserClips(){
 
     this.clips = [];
+    
     this.sort$.subscribe(sort=> {
       this.clipService.getUserClips(sort).then(docs => {
         docs.forEach(doc=> {
