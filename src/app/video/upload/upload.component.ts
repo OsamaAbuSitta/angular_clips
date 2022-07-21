@@ -10,6 +10,8 @@ import { ClipService } from 'src/app/services/clip-service.service';
 import IClip from 'src/app/models/clip';
 import { Router } from '@angular/router';
 import { DocumentReference } from '@angular/fire/compat/firestore';
+import { FfmpegService } from 'src/app/services/ffmpeg.service';
+import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-upload',
@@ -26,6 +28,9 @@ export class UploadComponent implements OnInit , OnDestroy {
   percentage = 0;
   user:firebase.User | null = null;
   uploadFileTask?: AngularFireUploadTask;
+  uploadScreenshotTask?: AngularFireUploadTask;
+  screenshots:string[] = [];
+  selectedScreenshot = '';
 
   get showAlertMessage ():boolean{
     return !!this.alertMessage;
@@ -48,18 +53,24 @@ export class UploadComponent implements OnInit , OnDestroy {
     private storage: AngularFireStorage,
     private authService : AuthService, 
     private clilpService: ClipService, 
-    private router:Router
+    private router:Router,
+    private ffmpegService : FfmpegService
     ) {
       this.authService.getUser().subscribe(user=> {
         this.user = user;
       })
+
+      this.ffmpegService.init();
    }
 
 
   ngOnInit(): void {
   }
 
-  storeFile($event:Event){
+  async storeFile($event:Event){
+    if(this.ffmpegService.isRunning)
+      return;
+
     this.file = ($event as DragEvent).dataTransfer ?     
                 ($event as DragEvent).dataTransfer?.files.item(0) ?? null:
                 ($event.target as HTMLInputElement).files?.item(0) ?? null;
@@ -68,13 +79,16 @@ export class UploadComponent implements OnInit , OnDestroy {
         return;
     }
 
+    this.screenshots = await this.ffmpegService.getScreenshots(this.file);
+    this.selectedScreenshot = this.screenshots[0];
+
     this.titleControl.setValue(this.file.name.replace(/\.[^/.]+$/,''));
 
     this.nextStep = true;
   }
 
 
-  uploadFile(){
+  async uploadFile(){
     this.uploadForm.disable();
 
     this.isUploading = true;
@@ -82,29 +96,49 @@ export class UploadComponent implements OnInit , OnDestroy {
     const fileExtension = '.mp4';
     const clipPath = `clips/${uniqueFileName}${fileExtension}`;
 
+    const screenshotBlob = await this.ffmpegService.blobFromURL(this.selectedScreenshot);
+    const screenshotPath = `screenshots/${uniqueFileName}.png`;
+
     this.alertMessage = 'Please wait! Your file is being uploaded ...';
     this.alertMessageColor = 'blue';
 
     this.uploadFileTask = this.storage.upload(clipPath,this.file);
     const clipRef = this.storage.ref(clipPath);
 
-    this.uploadFileTask?.percentageChanges().subscribe(progress => {
-      this.percentage = progress as number / 100 ;
+    this.uploadScreenshotTask = this.storage.upload(screenshotPath,screenshotBlob);
+    const screenshotRef = this.storage.ref(screenshotPath);
+
+    combineLatest([
+      this.uploadFileTask?.percentageChanges(),
+      this.uploadScreenshotTask?.percentageChanges()
+    ])
+    .subscribe((progress) => {
+      const [clilpProgress,screenshotProgress] = progress;
+      if(!clilpProgress || !screenshotProgress)
+        return 
+
+      const total :number = clilpProgress +  screenshotProgress;
+      this.percentage = total as number / 200 ;
     });
 
-    this.uploadFileTask?.snapshotChanges().pipe(
-      last(),
-      switchMap(()=> clipRef.getDownloadURL())
+    forkJoin([
+      this.uploadFileTask?.snapshotChanges(),
+      this.uploadScreenshotTask.snapshotChanges()])
+    .pipe(
+      switchMap(()=>  forkJoin([clipRef.getDownloadURL(),screenshotRef.getDownloadURL()]))
       )
     .subscribe({
-      next: async (url) => {
+      next: async (urls) => {
+        const [clipUrl,screenshotUrl] = urls;
         const clip :IClip = {
           uid : this.user?.uid as string,
           displayName: this.user?.displayName as string ,
           clipPath: clipPath, 
+          screenshotPath: screenshotPath,
           fileName: this.file?.name as string,
           title:this.titleControl.value,
-          url, 
+          url:clipUrl,
+          screenshotUrl, 
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }
 
@@ -139,4 +173,17 @@ export class UploadComponent implements OnInit , OnDestroy {
       this.router.navigate(['clip',clipId])
     },1000)
   }
+
+  imageSelected(screenshot:string){
+      this.selectedScreenshot = screenshot;
+  }
+
+  get isReady(): boolean{
+    return this.ffmpegService.isReady;
+  }
+
+  get isRunning():boolean{
+    return this.ffmpegService.isRunning;
+  }
+
 }
