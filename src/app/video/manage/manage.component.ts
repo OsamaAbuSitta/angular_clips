@@ -85,4 +85,13 @@ export class ManageComponent implements OnInit {
       console.error(error);
     }
   }
+
+  async copyToClilpboard($event:MouseEvent,clipId:string){
+    $event.preventDefault();
+    
+    const url = `${location.origin}/clip/${clipId}`;
+
+    await navigator.clipboard.writeText(url);
+    alert('Link Copied 👌')
+  }
 }
