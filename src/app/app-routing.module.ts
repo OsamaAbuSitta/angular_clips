@@ -23,6 +23,11 @@ const routes: Routes = [
     },
   },
   {
+    path:'',
+    loadChildren : async ()=> (await import('./video/video.module')).VideoModule
+    //loadChildren : ()=> import('./video/video.module').then(m=> m.VideoModule)
+  },
+  {
     path:'**',
     component:NotFoundComponent
   }
